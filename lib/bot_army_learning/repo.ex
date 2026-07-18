@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.Repo do
+defmodule BotArmyLibraryLearning.Repo do
   @moduledoc """
   Ecto Repository for the Learning bot.
 

@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.Application do
+defmodule BotArmyLibraryLearning.Application do
   @moduledoc """
   BotArmyLearning application supervisor.
 
@@ -22,7 +22,7 @@ defmodule BotArmyLearning.Application do
       |> maybe_add_pulse_publisher()
       |> maybe_add_consumer()
 
-    opts = [strategy: :one_for_one, name: BotArmyLearning.Supervisor]
+    opts = [strategy: :one_for_one, name: BotArmyLibraryLearning.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
@@ -30,31 +30,31 @@ defmodule BotArmyLearning.Application do
     # Only add Repo when explicitly enabled (running as standalone bot, not as a library)
     if @env == :test or not enabled?(),
       do: children,
-      else: [BotArmyLearning.Repo | children]
+      else: [BotArmyLibraryLearning.Repo | children]
   end
 
   defp maybe_add_card_store(children) do
     if @env == :test or not enabled?(),
       do: children,
-      else: [{BotArmyLearning.CardStore, []} | children]
+      else: [{BotArmyLibraryLearning.CardStore, []} | children]
   end
 
   defp maybe_add_session_manager(children) do
     if @env == :test or not enabled?(),
       do: children,
-      else: [{BotArmyLearning.SessionManager, []} | children]
+      else: [{BotArmyLibraryLearning.SessionManager, []} | children]
   end
 
   defp maybe_add_pulse_publisher(children) do
     if @env == :test or not enabled?(),
       do: children,
-      else: [{BotArmyLearning.PulsePublisher, []} | children]
+      else: [{BotArmyLibraryLearning.PulsePublisher, []} | children]
   end
 
   defp maybe_add_consumer(children) do
     if @env == :test or not enabled?(),
       do: children,
-      else: [{BotArmyLearning.NATS.Consumer, []} | children]
+      else: [{BotArmyLibraryLearning.NATS.Consumer, []} | children]
   end
 
   defp enabled?() do

@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.Schema.PromptVariant do
+defmodule BotArmyLibraryLearning.Schema.PromptVariant do
   use Ecto.Schema
   import Ecto.Changeset
 

@@ -10,8 +10,8 @@ defmodule Mix.Tasks.Learning.Deck.New do
   use Mix.Task
   require Logger
 
-  alias BotArmyLearning.Repo
-  alias BotArmyLearning.Schemas.{Domain, Deck}
+  alias BotArmyLibraryLearning.Repo
+  alias BotArmyLibraryLearning.Schemas.{Domain, Deck}
 
   @shortdoc "Create a new learning deck"
 

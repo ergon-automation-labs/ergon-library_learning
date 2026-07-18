@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.Handlers.SessionHandler do
+defmodule BotArmyLibraryLearning.Handlers.SessionHandler do
   @moduledoc """
   Handler for learning session lifecycle events.
 
@@ -10,14 +10,14 @@ defmodule BotArmyLearning.Handlers.SessionHandler do
 
   require Logger
 
-  alias BotArmyLearning.SessionManager
-  alias BotArmyLearning.NATS.Publisher
+  alias BotArmyLibraryLearning.SessionManager
+  alias BotArmyLibraryLearning.NATS.Publisher
 
   @doc """
   Handle session start event.
   """
   def handle_start(message) when is_map(message) do
-    %{tenant_id: tenant_id, user_id: user_id} = BotArmyCore.Tenant.extract_context(message)
+    %{tenant_id: tenant_id, user_id: user_id} = BotArmyLibraryCore.Tenant.extract_context(message)
     Logger.debug("SessionHandler: Processing session start event")
 
     payload = message["payload"] || %{}
@@ -38,7 +38,7 @@ defmodule BotArmyLearning.Handlers.SessionHandler do
   Handle session answer event.
   """
   def handle_answer(message) when is_map(message) do
-    %{tenant_id: tenant_id, user_id: user_id} = BotArmyCore.Tenant.extract_context(message)
+    %{tenant_id: tenant_id, user_id: user_id} = BotArmyLibraryCore.Tenant.extract_context(message)
     Logger.debug("SessionHandler: Processing session answer event")
 
     payload = message["payload"] || %{}
@@ -63,7 +63,7 @@ defmodule BotArmyLearning.Handlers.SessionHandler do
   Handle session end event.
   """
   def handle_end(message) when is_map(message) do
-    %{tenant_id: tenant_id, user_id: user_id} = BotArmyCore.Tenant.extract_context(message)
+    %{tenant_id: tenant_id, user_id: user_id} = BotArmyLibraryCore.Tenant.extract_context(message)
     Logger.debug("SessionHandler: Processing session end event")
 
     payload = message["payload"] || %{}

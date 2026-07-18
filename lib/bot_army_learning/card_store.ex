@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.CardStore do
+defmodule BotArmyLibraryLearning.CardStore do
   @moduledoc """
   In-memory card store with Ecto persistence.
 
@@ -9,8 +9,8 @@ defmodule BotArmyLearning.CardStore do
   require Logger
   import Ecto.Query
 
-  alias BotArmyLearning.Repo
-  alias BotArmyLearning.Schemas.Card
+  alias BotArmyLibraryLearning.Repo
+  alias BotArmyLibraryLearning.Schemas.Card
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)

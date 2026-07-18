@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.NATS.Consumer do
+defmodule BotArmyLibraryLearning.NATS.Consumer do
   @moduledoc """
   NATS message consumer for the Learning bot.
 
@@ -7,7 +7,7 @@ defmodule BotArmyLearning.NATS.Consumer do
   - `learning.card.*` - Card creation/management events
   - `learning.deck.*` - Deck creation events
 
-  Messages are decoded using BotArmyCore.NATS.Decoder and routed to
+  Messages are decoded using BotArmyLibraryCore.NATS.Decoder and routed to
   appropriate handlers based on the event type.
   """
 
@@ -58,9 +58,9 @@ defmodule BotArmyLearning.NATS.Consumer do
 
   @impl true
   def handle_continue(:connect, state) do
-    case GenServer.call(BotArmyRuntime.NATS.Connection, :get_connection, 5000) do
+    case GenServer.call(BotArmyLibraryRuntime.NATS.Connection, :get_connection, 5000) do
       {:ok, conn} ->
-        BotArmyRuntime.NATS.Connection.subscribe_to_status()
+        BotArmyLibraryRuntime.NATS.Connection.subscribe_to_status()
         subscribe_to_topics(conn, state)
 
       {:error, _reason} ->
@@ -95,7 +95,7 @@ defmodule BotArmyLearning.NATS.Consumer do
 
     case subs do
       subs when length(subs) == length(subjects) ->
-        BotArmyRuntime.Registry.register("learning", @subjects, @version)
+        BotArmyLibraryRuntime.Registry.register("learning", @subjects, @version)
         Process.send_after(self(), :registry_heartbeat, @registry_heartbeat_ms)
         {:noreply, %{state | subscriptions: subs}}
 
@@ -119,16 +119,16 @@ defmodule BotArmyLearning.NATS.Consumer do
 
   @impl true
   def handle_info({:msg, msg}, state) do
-    BotArmyRuntime.Tracing.with_consumer_span(msg.topic, Map.get(msg, :headers, []), fn ->
+    BotArmyLibraryRuntime.Tracing.with_consumer_span(msg.topic, Map.get(msg, :headers, []), fn ->
       Logger.debug("Received NATS message on subject: #{msg.topic}")
 
       if msg.topic == "gossip.poll.broadcast" do
         case Jason.decode(msg.body) do
-          {:ok, decoded} -> BotArmyLearning.GossipPollVoter.handle_poll_broadcast(decoded)
+          {:ok, decoded} -> BotArmyLibraryLearning.GossipPollVoter.handle_poll_broadcast(decoded)
           {:error, reason} -> Logger.warning("Failed to decode gossip poll: #{inspect(reason)}")
         end
       else
-        case BotArmyCore.NATS.Decoder.decode(msg.body) do
+        case BotArmyLibraryCore.NATS.Decoder.decode(msg.body) do
           {:ok, decoded_message} ->
             route_message(decoded_message)
 
@@ -163,8 +163,8 @@ defmodule BotArmyLearning.NATS.Consumer do
   @impl true
   def handle_info(:registry_heartbeat, state) do
     if state.subscriptions != [] do
-      BotArmyRuntime.Registry.register("learning", @subjects, @version)
-      BotArmyLearning.GossipPollVoter.maybe_vote_on_heartbeat()
+      BotArmyLibraryRuntime.Registry.register("learning", @subjects, @version)
+      BotArmyLibraryLearning.GossipPollVoter.maybe_vote_on_heartbeat()
       Process.send_after(self(), :registry_heartbeat, @registry_heartbeat_ms)
     end
 
@@ -181,19 +181,19 @@ defmodule BotArmyLearning.NATS.Consumer do
 
     case event do
       "learning.session.start" ->
-        BotArmyLearning.Handlers.SessionHandler.handle_start(message)
+        BotArmyLibraryLearning.Handlers.SessionHandler.handle_start(message)
 
       "learning.session.answer" ->
-        BotArmyLearning.Handlers.SessionHandler.handle_answer(message)
+        BotArmyLibraryLearning.Handlers.SessionHandler.handle_answer(message)
 
       "learning.session.end" ->
-        BotArmyLearning.Handlers.SessionHandler.handle_end(message)
+        BotArmyLibraryLearning.Handlers.SessionHandler.handle_end(message)
 
       "learning.card.create" ->
-        BotArmyLearning.Handlers.CardHandler.handle_create(message)
+        BotArmyLibraryLearning.Handlers.CardHandler.handle_create(message)
 
       "learning.deck.create" ->
-        BotArmyLearning.Handlers.CardHandler.handle_deck_create(message)
+        BotArmyLibraryLearning.Handlers.CardHandler.handle_deck_create(message)
 
       _ ->
         Logger.debug("Unknown Learning event type: #{event}")

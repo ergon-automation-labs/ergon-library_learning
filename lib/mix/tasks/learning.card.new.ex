@@ -9,8 +9,8 @@ defmodule Mix.Tasks.Learning.Card.New do
 
   use Mix.Task
 
-  alias BotArmyLearning.Repo
-  alias BotArmyLearning.Schemas.{Deck, Card}
+  alias BotArmyLibraryLearning.Repo
+  alias BotArmyLibraryLearning.Schemas.{Deck, Card}
 
   @shortdoc "Create a new flashcard"
 

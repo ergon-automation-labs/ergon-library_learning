@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.Schemas.Domain do
+defmodule BotArmyLibraryLearning.Schemas.Domain do
   @moduledoc """
   Learning domain schema.
 
@@ -15,7 +15,7 @@ defmodule BotArmyLearning.Schemas.Domain do
     field :name, :string
     field :description, :string
 
-    has_many :decks, BotArmyLearning.Schemas.Deck
+    has_many :decks, BotArmyLibraryLearning.Schemas.Deck
 
     field :tenant_id, :binary_id
     field :user_id, :binary_id

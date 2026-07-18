@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.NATS.Publisher do
+defmodule BotArmyLibraryLearning.NATS.Publisher do
   @moduledoc """
   NATS event publisher for the Learning bot.
 
@@ -64,7 +64,7 @@ defmodule BotArmyLearning.NATS.Publisher do
   defp do_publish(subject, body) do
     case Jason.decode(body) do
       {:ok, payload} ->
-        case BotArmyRuntime.NATS.Publisher.publish(subject, payload) do
+        case BotArmyLibraryRuntime.NATS.Publisher.publish(subject, payload) do
           {:ok, _} -> :ok
           {:error, reason} -> {:error, reason}
         end

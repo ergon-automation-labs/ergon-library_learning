@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.Schemas.Card do
+defmodule BotArmyLibraryLearning.Schemas.Card do
   @moduledoc """
   Learning card schema.
 
@@ -22,9 +22,9 @@ defmodule BotArmyLearning.Schemas.Card do
     field :difficulty, :float, default: 5.0
     field :due_at, :date
 
-    belongs_to :deck, BotArmyLearning.Schemas.Deck
-    has_many :reviews, BotArmyLearning.Schemas.Review
-    has_many :snoozes, BotArmyLearning.Schemas.Snooze
+    belongs_to :deck, BotArmyLibraryLearning.Schemas.Deck
+    has_many :reviews, BotArmyLibraryLearning.Schemas.Review
+    has_many :snoozes, BotArmyLibraryLearning.Schemas.Snooze
 
     field :tenant_id, :binary_id
     field :user_id, :binary_id

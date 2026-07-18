@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.OutcomeTracker do
+defmodule BotArmyLibraryLearning.OutcomeTracker do
   @moduledoc """
   Generic outcome tracker for recording bot decisions and their results.
 
@@ -7,11 +7,11 @@ defmodule BotArmyLearning.OutcomeTracker do
 
   ## Usage
 
-      BotArmyLearning.OutcomeTracker.record(
+      BotArmyLibraryLearning.OutcomeTracker.record(
         "proposal-1", "factory", "approved", "pass"
       )
 
-      BotArmyLearning.OutcomeTracker.stats("factory")
+      BotArmyLibraryLearning.OutcomeTracker.stats("factory")
       # => %{total: 10, correct: 8, accuracy: 0.8}
   """
 
@@ -76,7 +76,7 @@ defmodule BotArmyLearning.OutcomeTracker do
 
   @impl true
   def init(opts) do
-    repo = Keyword.get(opts, :repo, BotArmyLearning.Repo)
+    repo = Keyword.get(opts, :repo, BotArmyLibraryLearning.Repo)
     correctness_fn = Keyword.get(opts, :correctness_fn, &correct?/2)
     # Load recent outcomes (last 30 days) from DB into in-memory state
     outcomes =
@@ -149,7 +149,7 @@ defmodule BotArmyLearning.OutcomeTracker do
 
   defp persist_outcome(id, category, decision, actual_result, was_correct, recorded_at, repo) do
     try do
-      %BotArmyLearning.Schema.Outcome{
+      %BotArmyLibraryLearning.Schema.Outcome{
         item_id: id,
         category: category,
         decision: decision,

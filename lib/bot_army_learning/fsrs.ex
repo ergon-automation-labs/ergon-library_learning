@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.FSRS do
+defmodule BotArmyLibraryLearning.FSRS do
   @moduledoc """
   Free Spaced Repetition Scheduler (FSRS-5) implementation.
 

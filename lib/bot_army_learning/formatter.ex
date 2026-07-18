@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.Formatter do
+defmodule BotArmyLibraryLearning.Formatter do
   @moduledoc """
   Message formatting for Learning Bot non-LLM notifications.
 
@@ -9,7 +9,7 @@ defmodule BotArmyLearning.Formatter do
   """
 
   require Logger
-  alias BotArmyRuntime.Personality.Formatter
+  alias BotArmyLibraryRuntime.Personality.Formatter
 
   @doc """
   Format learning notifications.

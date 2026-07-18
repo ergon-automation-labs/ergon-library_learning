@@ -1,7 +1,7 @@
 SCRIPTS_DIRECTORY ?= $(abspath $(CURDIR)/../scripts)
 MIX ?= /Users/abby/.local/share/mise/shims/mix
 
-.PHONY: test-handlers test-stores test-nats test-integration test-full setup help deps test credo dialyzer coverage check format clean release publish-release setup-hooks setup-db reset-db logs push-and-publish
+.PHONY: test-handlers test-stores test-nats test-integration test-full setup help deps test credo dialyzer coverage check format clean release publish-release setup-hooks setup-db reset-db logs push-and-publish bump-version
 
 help:
 	@echo "BotArmyLearning - Learning Bot"
@@ -142,3 +142,10 @@ push-and-publish:
 
 logs:
 	@$(SCRIPTS_DIRECTORY)/tail_bot_log.sh
+
+bump-version:
+	@if [ -z "$(BUMP)" ]; then echo "Usage: make bump-version BUMP=major|minor|patch"; exit 1; fi
+	@OLD=$$(grep 'version:' mix.exs | head -1 | sed -E 's/.*version: "([^"]+)".*/\1/'); \
+	bash $(SCRIPTS_DIRECTORY)/bump_version.sh mix.exs $(BUMP) > /dev/null; \
+	NEW=$$(grep 'version:' mix.exs | head -1 | sed -E 's/.*version: "([^"]+)".*/\1/'); \
+	echo "✓ Bumped: $$OLD → $$NEW"

@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.CardStoreBehaviour do
+defmodule BotArmyLibraryLearning.CardStoreBehaviour do
   @moduledoc """
   Behavior for card storage backends.
 

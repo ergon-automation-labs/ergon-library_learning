@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.Schema.OptimizationProposal do
+defmodule BotArmyLibraryLearning.Schema.OptimizationProposal do
   use Ecto.Schema
   import Ecto.Changeset
 

@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.Schemas.Session do
+defmodule BotArmyLibraryLearning.Schemas.Session do
   @moduledoc """
   Learning session schema.
 
@@ -17,8 +17,8 @@ defmodule BotArmyLearning.Schemas.Session do
     field :cards_reviewed, :integer, default: 0
     field :status, :string, default: "active"
 
-    belongs_to :deck, BotArmyLearning.Schemas.Deck
-    has_many :reviews, BotArmyLearning.Schemas.Review
+    belongs_to :deck, BotArmyLibraryLearning.Schemas.Deck
+    has_many :reviews, BotArmyLibraryLearning.Schemas.Review
 
     field :tenant_id, :binary_id
     field :user_id, :binary_id

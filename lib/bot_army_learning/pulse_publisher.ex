@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.PulsePublisher do
+defmodule BotArmyLibraryLearning.PulsePublisher do
   @moduledoc """
   Publishes health pulses for the Learning bot.
 
@@ -78,7 +78,7 @@ defmodule BotArmyLearning.PulsePublisher do
         "degraded"
       end
 
-    BotArmyRuntime.SynapseHealth.publish(
+    BotArmyLibraryRuntime.SynapseHealth.publish(
       source: "bot_army_learning",
       service: "learning",
       health_signal: health_signal
@@ -107,7 +107,7 @@ defmodule BotArmyLearning.PulsePublisher do
 
       subject = "bot.learning.pulse"
 
-      case BotArmyRuntime.NATS.Publisher.publish(subject, payload) do
+      case BotArmyLibraryRuntime.NATS.Publisher.publish(subject, payload) do
         {:ok, _} ->
           Logger.info("[PulsePublisher] Published learning pulse to #{subject}")
 

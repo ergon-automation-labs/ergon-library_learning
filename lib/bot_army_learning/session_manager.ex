@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.SessionManager do
+defmodule BotArmyLibraryLearning.SessionManager do
   @moduledoc """
   In-memory session manager for active learning sessions.
 
@@ -8,8 +8,8 @@ defmodule BotArmyLearning.SessionManager do
   use GenServer
   require Logger
 
-  alias BotArmyLearning.Repo
-  alias BotArmyLearning.Schemas.Session
+  alias BotArmyLibraryLearning.Repo
+  alias BotArmyLibraryLearning.Schemas.Session
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)

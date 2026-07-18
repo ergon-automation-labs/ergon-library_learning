@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.Schemas.Deck do
+defmodule BotArmyLibraryLearning.Schemas.Deck do
   @moduledoc """
   Learning deck schema.
 
@@ -16,9 +16,9 @@ defmodule BotArmyLearning.Schemas.Deck do
     field :description, :string
     field :card_count, :integer, default: 0
 
-    belongs_to :domain, BotArmyLearning.Schemas.Domain
-    has_many :cards, BotArmyLearning.Schemas.Card
-    has_many :sessions, BotArmyLearning.Schemas.Session
+    belongs_to :domain, BotArmyLibraryLearning.Schemas.Domain
+    has_many :cards, BotArmyLibraryLearning.Schemas.Card
+    has_many :sessions, BotArmyLibraryLearning.Schemas.Session
 
     field :tenant_id, :binary_id
     field :user_id, :binary_id

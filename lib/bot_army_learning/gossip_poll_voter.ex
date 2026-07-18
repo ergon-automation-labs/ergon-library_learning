@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.GossipPollVoter do
+defmodule BotArmyLibraryLearning.GossipPollVoter do
   @moduledoc false
 
   @table :learning_gossip_poll_state
@@ -73,7 +73,7 @@ defmodule BotArmyLearning.GossipPollVoter do
       "schema_version" => "1.0",
       "timestamp" => DateTime.utc_now() |> DateTime.to_iso8601(),
       "source" => "bot_army_learning",
-      "tenant_id" => BotArmyRuntime.Tenant.default_tenant_id(),
+      "tenant_id" => BotArmyLibraryRuntime.Tenant.default_tenant_id(),
       "conversation_id" => poll_id,
       "payload" => %{
         "poll_id" => poll_id,
@@ -84,7 +84,7 @@ defmodule BotArmyLearning.GossipPollVoter do
       }
     }
 
-    BotArmyRuntime.NATS.Publisher.publish("gossip.poll.vote", message)
+    BotArmyLibraryRuntime.NATS.Publisher.publish("gossip.poll.vote", message)
   end
 
   defp ensure_table! do
@@ -112,7 +112,7 @@ defmodule BotArmyLearning.GossipPollVoter do
   end
 
   defp choose_priority_vote(options, context_snapshot) do
-    BotArmyRuntime.GossipPollAffinity.choose_priority_vote(
+    BotArmyLibraryRuntime.GossipPollAffinity.choose_priority_vote(
       options,
       context_snapshot,
       :learning,

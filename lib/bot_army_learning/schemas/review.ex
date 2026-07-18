@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.Schemas.Review do
+defmodule BotArmyLibraryLearning.Schemas.Review do
   @moduledoc """
   Card review record schema.
 
@@ -15,8 +15,8 @@ defmodule BotArmyLearning.Schemas.Review do
     field :grade, :integer
     field :review_duration_ms, :integer
 
-    belongs_to :card, BotArmyLearning.Schemas.Card
-    belongs_to :session, BotArmyLearning.Schemas.Session
+    belongs_to :card, BotArmyLibraryLearning.Schemas.Card
+    belongs_to :session, BotArmyLibraryLearning.Schemas.Session
 
     field :tenant_id, :binary_id
     field :user_id, :binary_id

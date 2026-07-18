@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.PromptOptimizer do
+defmodule BotArmyLibraryLearning.PromptOptimizer do
   @moduledoc """
   Tracks prompt performance and suggests improvements.
 
@@ -8,11 +8,11 @@ defmodule BotArmyLearning.PromptOptimizer do
 
   ## Usage
 
-      BotArmyLearning.PromptOptimizer.record(
+      BotArmyLibraryLearning.PromptOptimizer.record(
         "decomposition", prompt_text, score: 0.85, metadata: %{task_id: "t1"}
       )
 
-      BotArmyLearning.PromptOptimizer.best_prompt("decomposition")
+      BotArmyLibraryLearning.PromptOptimizer.best_prompt("decomposition")
       # => %{prompt: "...", avg_score: 0.92, uses: 12}
   """
 
@@ -80,7 +80,7 @@ defmodule BotArmyLearning.PromptOptimizer do
   defp load_all_variants do
     import Ecto.Query
 
-    BotArmyLearning.Repo.all(from(pv in "learning_prompt_variants", select: pv))
+    BotArmyLibraryLearning.Repo.all(from(pv in "learning_prompt_variants", select: pv))
     |> Enum.map(fn row ->
       key = {row.task_type, row.prompt_text}
 
@@ -143,7 +143,7 @@ defmodule BotArmyLearning.PromptOptimizer do
     try do
       prompt_hash = :crypto.hash(:sha256, prompt_text) |> Base.encode16(case: :lower)
 
-      %BotArmyLearning.Schema.PromptVariant{
+      %BotArmyLibraryLearning.Schema.PromptVariant{
         task_type: task_type,
         prompt_hash: prompt_hash,
         prompt_text: prompt_text,
@@ -151,7 +151,7 @@ defmodule BotArmyLearning.PromptOptimizer do
         uses: uses,
         last_updated_at: DateTime.utc_now()
       }
-      |> BotArmyLearning.Repo.insert(
+      |> BotArmyLibraryLearning.Repo.insert(
         on_conflict: [
           set: [total_score: total_score, uses: uses, last_updated_at: DateTime.utc_now()]
         ],

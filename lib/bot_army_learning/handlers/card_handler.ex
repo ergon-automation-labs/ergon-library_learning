@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.Handlers.CardHandler do
+defmodule BotArmyLibraryLearning.Handlers.CardHandler do
   @moduledoc """
   Handler for card and deck creation events.
 
@@ -9,14 +9,14 @@ defmodule BotArmyLearning.Handlers.CardHandler do
 
   require Logger
 
-  alias BotArmyLearning.CardStore
-  alias BotArmyLearning.NATS.Publisher
+  alias BotArmyLibraryLearning.CardStore
+  alias BotArmyLibraryLearning.NATS.Publisher
 
   @doc """
   Handle card creation event.
   """
   def handle_create(message) when is_map(message) do
-    %{tenant_id: tenant_id, user_id: user_id} = BotArmyCore.Tenant.extract_context(message)
+    %{tenant_id: tenant_id, user_id: user_id} = BotArmyLibraryCore.Tenant.extract_context(message)
     Logger.debug("CardHandler: Processing card create event")
 
     payload = message["payload"] || %{}
@@ -34,7 +34,7 @@ defmodule BotArmyLearning.Handlers.CardHandler do
   Handle deck creation event.
   """
   def handle_deck_create(message) when is_map(message) do
-    %{tenant_id: tenant_id, user_id: user_id} = BotArmyCore.Tenant.extract_context(message)
+    %{tenant_id: tenant_id, user_id: user_id} = BotArmyLibraryCore.Tenant.extract_context(message)
     Logger.debug("CardHandler: Processing deck create event")
 
     payload = message["payload"] || %{}

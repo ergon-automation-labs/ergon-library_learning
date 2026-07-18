@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.Schemas.Snooze do
+defmodule BotArmyLibraryLearning.Schemas.Snooze do
   @moduledoc """
   Card snooze record schema.
 
@@ -15,7 +15,7 @@ defmodule BotArmyLearning.Schemas.Snooze do
     field :snoozed_until, :utc_datetime
     field :reason, :string
 
-    belongs_to :card, BotArmyLearning.Schemas.Card
+    belongs_to :card, BotArmyLibraryLearning.Schemas.Card
 
     field :tenant_id, :binary_id
     field :user_id, :binary_id

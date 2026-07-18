@@ -16,8 +16,8 @@ defmodule Mix.Tasks.Learning.Stats do
   use Mix.Task
   import Ecto.Query
 
-  alias BotArmyLearning.Repo
-  alias BotArmyLearning.Schemas.{Domain, Deck, Card}
+  alias BotArmyLibraryLearning.Repo
+  alias BotArmyLibraryLearning.Schemas.{Domain, Deck, Card}
 
   @shortdoc "Show learning statistics"
 

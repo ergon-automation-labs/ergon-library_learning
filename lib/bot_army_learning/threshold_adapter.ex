@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.ThresholdAdapter do
+defmodule BotArmyLibraryLearning.ThresholdAdapter do
   @moduledoc """
   Adapts decision thresholds based on historical outcome accuracy.
 
@@ -8,7 +8,7 @@ defmodule BotArmyLearning.ThresholdAdapter do
 
   ## Usage
 
-      BotArmyLearning.ThresholdAdapter.adjustment("intent.nudge")
+      BotArmyLibraryLearning.ThresholdAdapter.adjustment("intent.nudge")
       # => 0.9  (tighten by 10% if accuracy is high)
   """
 
@@ -27,7 +27,7 @@ defmodule BotArmyLearning.ThresholdAdapter do
     - `:loosen_factor` — multiplier when loosening (default 1.2)
   """
   def adjustment(category, opts \\ []) do
-    stats = BotArmyLearning.OutcomeTracker.stats(category)
+    stats = BotArmyLibraryLearning.OutcomeTracker.stats(category)
     adjustment_for_accuracy(stats.accuracy, opts)
   end
 
@@ -36,7 +36,7 @@ defmodule BotArmyLearning.ThresholdAdapter do
 
   ## Example
 
-      iex> BotArmyLearning.ThresholdAdapter.apply_adjustment(0.7, 0.9)
+      iex> BotArmyLibraryLearning.ThresholdAdapter.apply_adjustment(0.7, 0.9)
       0.63
   """
   def apply_adjustment(base_threshold, adjustment_factor) do

@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.Schema.Outcome do
+defmodule BotArmyLibraryLearning.Schema.Outcome do
   use Ecto.Schema
   import Ecto.Changeset
 
