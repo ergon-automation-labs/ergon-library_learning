@@ -1,4 +1,4 @@
-defmodule BotArmyLearning.MixProject do
+defmodule BotArmyLibraryLearning.MixProject do
   use Mix.Project
 
   def project do
@@ -19,7 +19,7 @@ defmodule BotArmyLearning.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {BotArmyLearning.Application, []}
+      mod: {BotArmyLibraryLearning.Application, []}
     ]
   end
 
