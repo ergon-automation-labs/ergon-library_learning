@@ -52,7 +52,7 @@ defmodule BotArmyLibraryLearning.NATS.HealthResponder do
   end
 
   defp setup_responder(conn, state) do
-    case Gnat.request(conn, "bot_army.learning.health", self()) do
+    case Gnat.sub(conn, self(), "bot_army.learning.health") do
       {:ok, _sub} ->
         Logger.info("Learning health responder listening on bot_army.learning.health")
         {:noreply, state}
@@ -64,18 +64,24 @@ defmodule BotArmyLibraryLearning.NATS.HealthResponder do
     end
   end
 
-  defp handle_health_request(msg, state) do
-    uptime_ms = System.monotonic_time(:millisecond) - state.start_time
+  @doc """
+  Builds the health response body for a process started at `start_time`
+  (a `System.monotonic_time(:millisecond)` reading).
+  """
+  def health_payload(start_time) do
+    uptime_ms = System.monotonic_time(:millisecond) - start_time
 
-    response = %{
+    %{
       "service" => "learning",
       "status" => "healthy",
       "version" => @version,
       "uptime_seconds" => div(uptime_ms, 1000),
       "timestamp" => DateTime.utc_now() |> DateTime.to_iso8601()
     }
+  end
 
-    case Jason.encode(response) do
+  defp handle_health_request(msg, state) do
+    case Jason.encode(health_payload(state.start_time)) do
       {:ok, json} ->
         if msg.reply_to do
           GenServer.call(BotArmyLibraryRuntime.NATS.Connection, :get_connection, 1000)

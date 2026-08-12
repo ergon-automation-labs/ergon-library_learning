@@ -32,6 +32,11 @@ defmodule BotArmyLibraryLearning.NATS.Consumer do
       subject: "gossip.poll.broadcast",
       type: :subscribe,
       description: "Army general poll broadcasts"
+    },
+    %{
+      subject: "bot_army.learning.health",
+      type: :request_reply,
+      description: "Learning bot health check"
     }
   ]
 
