@@ -1,8 +1,8 @@
-defmodule BotArmyLearningTest do
+defmodule BotArmyLibraryLearningTest do
   use ExUnit.Case
   @moduletag :core
 
-  alias BotArmyLearning.{OutcomeTracker, ThresholdAdapter, PromptOptimizer}
+  alias BotArmyLibraryLearning.{OutcomeTracker, ThresholdAdapter, PromptOptimizer}
 
   setup do
     start_supervised!(OutcomeTracker)

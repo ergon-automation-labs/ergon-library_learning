@@ -1,9 +1,9 @@
-defmodule BotArmyLearning.FSRSTest do
+defmodule BotArmyLibraryLearning.FSRSTest do
   use ExUnit.Case
   @moduletag :scheduler
-  doctest BotArmyLearning.FSRS
+  doctest BotArmyLibraryLearning.FSRS
 
-  alias BotArmyLearning.FSRS
+  alias BotArmyLibraryLearning.FSRS
 
   describe "initial_stability/1" do
     test "returns 0.4 for grade 0 (again)" do
