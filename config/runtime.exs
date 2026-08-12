@@ -19,8 +19,7 @@ config :bot_army_library_learning, BotArmyLearning.Repo,
   password:
     System.get_env("BOT_ARMY_LEARNING_DB_PASSWORD") || System.get_env("DATABASE_PASSWORD") ||
       "postgres",
-  pool_size: System.get_env("BOT_POOL_SIZE", "15") |> String.to_integer(),
-
+  pool_size: System.get_env("BOT_POOL_SIZE", "15") |> String.to_integer()
 
 # NATS configuration for bot_army_runtime
 # Parses NATS_HOST and NATS_PORT from environment variables (set by Salt)
