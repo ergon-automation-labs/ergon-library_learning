@@ -21,6 +21,7 @@ defmodule BotArmyLibraryLearning.Application do
       |> maybe_add_session_manager()
       |> maybe_add_pulse_publisher()
       |> maybe_add_consumer()
+      |> maybe_add_health_responder()
 
     opts = [strategy: :one_for_one, name: BotArmyLibraryLearning.Supervisor]
     Supervisor.start_link(children, opts)
@@ -55,6 +56,12 @@ defmodule BotArmyLibraryLearning.Application do
     if @env == :test or not enabled?(),
       do: children,
       else: [{BotArmyLibraryLearning.NATS.Consumer, []} | children]
+  end
+
+  defp maybe_add_health_responder(children) do
+    if @env == :test or not enabled?(),
+      do: children,
+      else: [{BotArmyLibraryLearning.NATS.HealthResponder, []} | children]
   end
 
   defp enabled?() do
