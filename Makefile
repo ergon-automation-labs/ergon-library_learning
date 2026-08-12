@@ -132,10 +132,10 @@ publish-release: release
 		echo "Failed to resolve version from mix.exs"; \
 		exit 1; \
 	fi; \
-	TARBALL=learning_bot-$$VERSION.tar.gz; \
+	TARBALL=library_learning_bot-$$VERSION.tar.gz; \
 	echo "Version: $$VERSION"; \
 	echo "Creating release tarball..."; \
-	tar -czf "$$TARBALL" -C _build/prod/rel learning_bot/; \
+	tar -czf "$$TARBALL" -C _build/prod/rel library_learning_bot/; \
 	echo "✓ Tarball created: $$TARBALL"; \
 	echo ""; \
 	echo "Creating GitHub release v$$VERSION..."; \
