@@ -24,7 +24,7 @@ if File.exists?(".env") do
 end
 
 # Ecto repositories for migrations
-config :bot_army_library_learning, ecto_repos: [BotArmyLearning.Repo]
+config :bot_army_library_learning, ecto_repos: [BotArmyLibraryLearning.Repo]
 
 # Database configuration is now in config/runtime.exs
 # This allows environment variables to be read at application startup, not at compile time

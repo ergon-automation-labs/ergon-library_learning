@@ -2,7 +2,7 @@ import Config
 
 # Test configuration uses isolated test database with SQL Sandbox
 # This allows parallel test execution with transaction isolation
-config :bot_army_library_learning, BotArmyLearning.Repo,
+config :bot_army_library_learning, BotArmyLibraryLearning.Repo,
   database: System.get_env("BOT_ARMY_LEARNING_TEST_DB_NAME", "ergon_learning_test"),
   hostname: System.get_env("BOT_ARMY_LEARNING_DB_HOST", "localhost"),
   port: String.to_integer(System.get_env("BOT_ARMY_LEARNING_DB_PORT", "30003")),

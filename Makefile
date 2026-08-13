@@ -147,8 +147,9 @@ publish-release: release
 			--notes "Learning Bot Elixir release v$$VERSION. Download and deploy with Jenkins." \
 			--draft=false; \
 	fi; \
+	echo "$$VERSION $$(date +%s)" > .release-published; \
 	echo "✓ Release published to GitHub"; \
-	echo "" 
+	echo ""
 push-and-publish:
 	@git push && $(MAKE) publish-release
 

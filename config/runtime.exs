@@ -4,7 +4,13 @@ import Config
 # It reads environment variables and configures the application.
 
 # Database configuration - read at runtime from environment variables
-config :bot_army_library_learning, BotArmyLearning.Repo,
+# Gate the bot's own supervision tree. This package doubles as a library, so
+# the Repo/stores/consumers only start when it runs as the standalone bot,
+# which Salt signals via BOT_ENABLED in /etc/bot_army/learning_bot.env.
+config :bot_army_library_learning,
+  enabled: System.get_env("BOT_ENABLED") == "true"
+
+config :bot_army_library_learning, BotArmyLibraryLearning.Repo,
   database:
     System.get_env("BOT_ARMY_LEARNING_DB_NAME") || System.get_env("DATABASE_NAME") ||
       "ergon_learning_dev",
