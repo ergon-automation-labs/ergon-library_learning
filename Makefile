@@ -25,12 +25,21 @@ help:
 	@echo "  make logs            - Tail learning_bot log with grc (brew install grc; make -C .. install-grc)"
 	@echo ""
 	@echo "Release commands:"
+	@echo "  make bump-version BUMP=patch|minor|major"
+	@echo "                       - Bump version in mix.exs (never edit it by hand)"
 	@echo "  make release         - Build OTP release locally"
+	@echo "  make test-release-smoke - Boot the release, verify no boot errors"
 	@echo "  make publish-release - Build, package, and publish to GitHub"
+	@echo "  make sync-release-version - Repair a stale .release-published marker"
+	@echo ""
+	@echo "Deployment commands:"
+	@echo "  make deploy          - Deploy to air via the monorepo"
+	@echo "  make verify-health   - Probe bot_army.learning.health over NATS"
+	@echo "  make verify-bot-nats - Monorepo NATS verification"
 	@echo ""
 	@echo "Normal workflow:"
-	@echo "  git push             - Fast compile+test validation"
-	@echo "  make push-and-publish - Push then publish release asset"
+	@echo "  make push            - test + compile + credo, then push"
+	@echo "  make bump-version BUMP=patch && make push && make publish-release && make deploy"
 	@echo ""
 
 setup: init deps setup-hooks setup-db
@@ -61,12 +70,6 @@ reset-db:
 
 init:
 	@if [ ! -d .git ]; then git init; echo "Git initialized."; else echo "Git already initialized."; fi
-
-compile:
-	@LOG_FILE="/tmp/compile-learning-$$(date +%s).log"; \
-	echo "Compiling learning and logging to $$LOG_FILE..."; \
-	$(MIX) compile 2>&1 | tee "$$LOG_FILE"; \
-	echo "✓ Compilation log: $$LOG_FILE"
 
 deps:
 	$(MIX) deps.get
@@ -118,11 +121,11 @@ release: check
 	@echo "==============================================="
 	@echo "Building OTP release"
 	@echo "==============================================="
-	rm -rf _build/prod/rel/learning_bot
+	rm -rf _build/prod/rel/library_learning_bot
 	MIX_ENV=prod $(MIX) release
 	@echo ""
 	@echo "✓ Release built successfully"
-	@echo "Location: _build/prod/rel/learning_bot/"
+	@echo "Location: _build/prod/rel/library_learning_bot/"
 	@echo ""
 
 publish-release: release
@@ -172,3 +175,83 @@ push: test compile credo
 
 git-push:
 	@git push origin main 2>&1 | tail -3
+
+
+# ---------------------------------------------------------------------------
+# Release / deployment (delegates to the monorepo where appropriate)
+# ---------------------------------------------------------------------------
+.PHONY: test-release-smoke sync-release-version deploy deploy-bot verify-bot verify-bot-nats verify-health
+
+test-release-smoke:
+	@echo "Running release smoke test for library_learning_bot"
+	@RELEASE_NAME=library_learning_bot NATS_SERVERS=nats://localhost:4224 \
+		bash $(SCRIPTS_DIRECTORY)/test_release_smoke.sh
+
+# Rewrites .release-published, which the monorepo deploy-bot gate reads.
+# publish-release does this automatically; use this to repair a stale marker.
+sync-release-version:
+	@VERSION=$$(sed -n 's/^[[:space:]]*version:[[:space:]]*"\([^"]*\)".*/\1/p' mix.exs | head -n 1); \
+	if [ -z "$$VERSION" ]; then \
+		echo "❌ Failed to resolve version from mix.exs"; exit 1; \
+	fi; \
+	echo "$$VERSION $$(date +%s)" > .release-published; \
+	echo "✓ Synced release marker: v$$VERSION"
+
+_FIND_MONOREPO_ROOT = \
+	if [ -n "$(MONOREPO_ROOT)" ]; then \
+		echo "$(MONOREPO_ROOT)"; \
+		exit 0; \
+	fi; \
+	CURRENT_DIR=$$(pwd); \
+	while [ "$$CURRENT_DIR" != "/" ]; do \
+		if [ -f "$$CURRENT_DIR/Makefile" ] && grep -q "verify-bot-nats:" "$$CURRENT_DIR/Makefile"; then \
+			if [ -d "$$CURRENT_DIR/bots" ] || [ -d "$$CURRENT_DIR/bot_army_infra" ]; then \
+				echo "$$CURRENT_DIR"; \
+				exit 0; \
+			fi; \
+		fi; \
+		CURRENT_DIR=$$(dirname "$$CURRENT_DIR"); \
+	done; \
+	if [ -d "../../elixir_bots" ] && [ -f "../../elixir_bots/Makefile" ]; then \
+		echo "$$(cd ../../elixir_bots && pwd)"; \
+		exit 0; \
+	fi; \
+	echo ""; \
+	exit 1
+
+deploy: deploy-bot
+
+deploy-bot:
+	@MONOREPO_ROOT=$$($(call _FIND_MONOREPO_ROOT)) || { \
+		echo "❌ Could not find monorepo root"; exit 1; \
+	}; \
+	$(MAKE) -C "$$MONOREPO_ROOT" deploy-bot BOT=library_learning TARGET=air
+
+verify-bot:
+	@MONOREPO_ROOT=$$($(call _FIND_MONOREPO_ROOT)) || { \
+		echo "❌ Could not find monorepo root"; exit 1; \
+	}; \
+	$(MAKE) -C "$$MONOREPO_ROOT" verify-bot BOT=library_learning
+
+verify-bot-nats:
+	@MONOREPO_ROOT=$$($(call _FIND_MONOREPO_ROOT)) || { \
+		echo "❌ Could not find monorepo root"; exit 1; \
+	}; \
+	$(MAKE) -C "$$MONOREPO_ROOT" verify-bot-nats BOT=library_learning
+
+# The monorepo's verify-bot-nats derives bot_army.library_learning.health from
+# the directory name, which is not the subject this bot serves. Probe directly.
+verify-health:
+	@PORT=$${NATS_PORT:-4222}; \
+	echo "Probing bot_army.learning.health on port $$PORT..."; \
+	OUT=$$(nats request --server nats://localhost:$$PORT bot_army.learning.health '{}' --timeout 10s --raw 2>/dev/null); \
+	case "$$OUT" in \
+		*'"status"'*) ;; \
+		*) \
+			echo "❌ No health payload — bot not running, or responder not subscribed"; \
+			echo "   Got: $${OUT:-<empty>}"; \
+			echo "   Check: tail -50 /var/log/bot_army/learning_bot.log"; \
+			exit 1; ;; \
+	esac; \
+	echo "$$OUT"; \
+	echo "✓ Health responder answered"
