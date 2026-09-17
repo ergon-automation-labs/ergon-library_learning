@@ -22,18 +22,25 @@ defmodule BotArmyLibraryLearning.OutcomeTracker do
 
   # ── Client API ──────────────────────────────────────────────
 
+  @doc """
+  Start the tracker.
+
+  ## Registered name
+
+  The process is registered as `:name` when given, otherwise as this module
+  (`#{inspect(@default_name)}`). **`:repo` never affects the registered name** —
+  it only selects the repo outcomes persist to.
+
+  Older versions derived a name from `:repo` (`"<repo>_outcome_tracker"`). That
+  registered a process no call site could reach, because `stats/2`,
+  `recent_outcomes/4`, `record/5` and `ThresholdAdapter.adjustment/2` all default
+  to this module's name: callers crashed on `stats`, and `record` dropped every
+  outcome with no log line. Prefer an explicit `name:` over relying on the
+  default; pass a matching `server:` to the client functions when you do.
+  """
   def start_link(opts \\ []) do
-    name =
-      cond do
-        Keyword.has_key?(opts, :name) -> Keyword.get(opts, :name)
-        Keyword.has_key?(opts, :repo) -> derive_name(opts[:repo])
-        true -> @default_name
-      end
-
-    GenServer.start_link(__MODULE__, opts, name: name)
+    GenServer.start_link(__MODULE__, opts, name: Keyword.get(opts, :name, @default_name))
   end
-
-  defp derive_name(repo) when is_atom(repo), do: :"#{repo}_outcome_tracker"
 
   @doc "Get the repo module from state (internal)."
   def get_repo(server \\ @default_name) do

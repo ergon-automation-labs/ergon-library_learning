@@ -12,6 +12,8 @@ defmodule BotArmyLibraryLearning.ThresholdAdapter do
       # => 0.9  (tighten by 10% if accuracy is high)
   """
 
+  @default_tracker BotArmyLibraryLearning.OutcomeTracker
+
   @doc """
   Compute a threshold adjustment factor for a category.
 
@@ -21,13 +23,16 @@ defmodule BotArmyLibraryLearning.ThresholdAdapter do
     - otherwise → 1.0 (no change)
 
   Pass `opts` to override defaults:
+    - `:server` — the tracker to read stats from (default: the module name).
+      Required for hosts that register their tracker under a custom `name:`;
+      without it this reads the default name and a `:noproc` crash follows.
     - `:tighten_threshold` — accuracy threshold for tightening (default 0.9)
     - `:loosen_threshold` — accuracy threshold for loosening (default 0.5)
     - `:tighten_factor` — multiplier when tightening (default 0.9)
     - `:loosen_factor` — multiplier when loosening (default 1.2)
   """
   def adjustment(category, opts \\ []) do
-    stats = BotArmyLibraryLearning.OutcomeTracker.stats(category)
+    stats = @default_tracker.stats(category, Keyword.get(opts, :server, @default_tracker))
     adjustment_for_accuracy(stats.accuracy, opts)
   end
 
