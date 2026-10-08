@@ -139,12 +139,14 @@ publish-release: release
 	else \
 		gh release create "v$$VERSION" "$$TARBALL" \
 			--title "Release v$$VERSION" \
-			--notes "Learning Bot Elixir release v$$VERSION. Download and deploy with Jenkins." \
+			--notes "Learning Bot Elixir release v$$VERSION." \
 			--draft=false; \
 	fi; \
 	echo "$$VERSION $$(date +%s)" > .release-published; \
 	echo "✓ Release published to GitHub"; \
 	echo ""
+
+	@$(MAKE) publish-deploy-event TARGET=air
 push-and-publish:
 	@git push && $(MAKE) publish-release
 
